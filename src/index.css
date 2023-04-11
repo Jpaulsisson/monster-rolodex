@@ -1,0 +1,9 @@
+.span {
+  filter:blur(10px);
+  transition: ease-in-out 500ms;
+}
+
+.span:hover {
+  color: teal;
+  filter: none;
+}
