@@ -1,0 +1,26 @@
+.search-box {
+  -webkit-appearance: none;
+  border: none;
+  outline: none;
+  padding: 10px;
+  width: 250px;
+  line-height: 30px;
+  margin-bottom: 30px;
+}
+
+.monster-search-box {
+  -webkit-appearance: none;
+  background-color: black;
+  color: var(--lightGreen);
+  border: 5px solid rgb(101, 1, 101);
+  border-radius: 250px;
+  outline: none;
+  padding: 10px;
+  width: 250px;
+  line-height: 30px;
+  margin-bottom: 30px;
+}
+
+.monster-search-box::placeholder {
+  color: var(--lightGreen);
+}

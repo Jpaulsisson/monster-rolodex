@@ -1,32 +1,60 @@
-import { Component } from 'react'
-import './App.css'
+import { Component } from 'react';
+import './App.css';
+import CardList from './components/card-list/card-list.component';
+import SearchBox from './components/search-box/search-box.component';
 
 class App extends Component {
   constructor() {
     super();
 
     this.state = {
-      number: { mine: 1337, yours: 5000 },
-      name: 'Skri11s'
+      monsters: [],
+      searchField: ''
     };
   }
 
-    render(){
+  componentDidMount() {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then((json) => 
+      this.setState(
+        () => {
+          return { monsters: json };
+        })
+      )
+      .catch(error => console.log('something went wrong'));
+  }
+
+  onSearchChange = (e) => {   
+    const searchField = e.target.value.toLowerCase();
+    this.setState(
+      () => {
+      return { searchField };
+    })
+  }
+
+  render() {
+    
+    const { monsters, searchField } = this.state;
+    const { onSearchChange } = this;
+
+    const searchResults = monsters.filter((monster) => {
+      return monster.name.toLowerCase().includes(searchField);
+  })
+
     return (
       <div className="App">
-        <h1>This is your number {this.state.number.yours}!</h1>
-        <h2>and this is mine...<span className='span'>{this.state.number.mine}</span></h2>
-        <button onClick={() => {
-          let num = Math.floor(Math.random() * 10000);
-          this.setState(() => {
-            return {
-              number: { mine: 1337, yours: num }
-            }
-          });
-          // this.setState({ number: { mine: 1337, yours: num } } );
-        }}>Click me!</button>
+        <h1 className="app-title">Monster Rolodex</h1>
+
+        <SearchBox
+        className='monster-search-box'
+        placeholder='Search for monsters...' 
+        onSearchChange={ onSearchChange }/>
+
+        <CardList monsters={ searchResults }/>
+
       </div>
-    )
+    );
+  }
 }
-}
-export default App
+export default App;
