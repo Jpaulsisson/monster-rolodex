@@ -1,60 +1,46 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import CardList from './components/card-list/card-list.component';
 import SearchBox from './components/search-box/search-box.component';
 
-class App extends Component {
-  constructor() {
-    super();
+const App = () => {
 
-    this.state = {
-      monsters: [],
-      searchField: ''
-    };
-  }
+  const [ searchField, setSearchField ] = useState('');
+  const [ monsters, setMonsters ] = useState([]);
+  const [ searchResults, setSearchResults ] = useState([ monsters ]);
 
-  componentDidMount() {
+  const onSearchChange = (e) => {   
+    const searchString = e.target.value.toLowerCase();
+    setSearchField(searchString);
+};
+
+  const monsterCall = useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
-      .then((json) => 
-      this.setState(
-        () => {
-          return { monsters: json };
-        })
-      )
-      .catch(error => console.log('something went wrong'));
-  }
+      .then((json) => setMonsters(json));
+  }, []);
 
-  onSearchChange = (e) => {   
-    const searchField = e.target.value.toLowerCase();
-    this.setState(
-      () => {
-      return { searchField };
-    })
-  }
 
-  render() {
-    
-    const { monsters, searchField } = this.state;
-    const { onSearchChange } = this;
+  useEffect(() => { 
+    const currentSearch = monsters.filter((monster) => {
+        return monster.name.toLowerCase().includes(searchField);
+    });
+    setSearchResults(currentSearch);
+  }, [monsters, searchField]);
 
-    const searchResults = monsters.filter((monster) => {
-      return monster.name.toLowerCase().includes(searchField);
-  })
 
-    return (
-      <div className="App">
+  return (
+    <div className="App">
         <h1 className="app-title">Monster Rolodex</h1>
 
         <SearchBox
         className='monster-search-box'
-        placeholder='Search for monsters...' 
+        placeholder='Find your monster...' 
         onSearchChange={ onSearchChange }/>
 
         <CardList monsters={ searchResults }/>
-
-      </div>
-    );
-  }
+    </div>
+  )
 }
+
 export default App;
